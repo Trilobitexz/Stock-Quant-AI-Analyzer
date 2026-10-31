@@ -32,7 +32,7 @@ cd <專案資料夾名稱>
 ```
 
 ### 步驟二：安裝專案套件依賴
-本專案使用 npm 作為套件管理器：
+本專案使用 npm 作為套件管理器（請先安裝 Node.js）：
 ```bash
 npm install
 ```
@@ -49,13 +49,15 @@ npm install
    > 💡 **如何取得免費的 Gemini API Key？**  
    > 您只需前往 [Google AI Studio](https://aistudio.google.com/)，登入 Google 帳號後點擊 **"Create API Key"** 即可免費建立一組。
 
+Firebase 登入與雲端同步使用專案中的 `firebase-applet-config.json`；若要使用自己的 Firebase 專案，請替換此檔設定，並在 Firebase 啟用 Google 登入及部署 `firestore.rules`。未設定 `GEMINI_API_KEY` 時，部分 AI 功能會使用離線結果或無法使用。
+
 ### 步驟四：啟動開發伺服器
 ```bash
 npm run dev
 ```
 啟動成功後，終端機會顯示類似以下的訊息：
 ```text
-Server running on http://localhost:3000
+Minimalist Stock Server successfully listening on http://0.0.0.0:3000
 ```
 
 ### 步驟五：開始看盤！
@@ -72,11 +74,11 @@ Zeabur 是近期在台灣開源與前端社群最熱門的託管平台，非常�
 1. 註冊並登入 [Zeabur](https://zeabur.com/)（可直接使用 GitHub 帳號登入）。
 2. 點擊 **"Create Project"**。
 3. 點擊 **"Deploy New Service"** ➡️ **"Git"** ➡️ 授權並選擇您這個股票專案的 GitHub Repository。
-4. Zeabur 會自動偵測 `package.json` 中的 `scripts`，並自動使用安裝與編譯環境，極速完成部署。
+4. 設定建置指令為 `npm run build`、啟動指令為 `npm start`；確認平台有提供 `PORT` 環境變數。
 5. **設定環境變數**：在部署的服務設定中，找到 **"Variables"**，新增一組環境變數：
    * Key: `GEMINI_API_KEY`
    * Value: `(您的 Gemini API Key)`
-6. 點擊 **"Generate Domain"** 產生一個公網網址，即可在線上完美造訪！
+6. 點擊 **"Generate Domain"** 產生一個公網網址，即可在線上使用；實際可用功能依 API 金鑰與服務設定而定。
 
 ### 🎯 推薦二：Render
 Render 是一個非常流行且免費起步的雲端託管服務：
@@ -92,22 +94,20 @@ Render 是一個非常流行且免費起步的雲端託管服務：
    * Value: `(您的 Gemini API Key)`
 6. 點擊 **"Create Web Service"**，Render 將為您構建並託管此應用。
 
-### 🎯 推薦三：Railway
-1. 登入 [Railway](https://railway.app/)。
-2. 點擊 **"New Project"** ➡️ **"Deploy from GitHub repo"**。
-3. 選擇此專案並點擊 Deploy。
-4. 在專案的 **Variables** 標籤內設置 `GEMINI_API_KEY`。
-5. Railway 將自動建立公有域名供您存取。
-
----
-
 ## 🛠️ 專案技術細節
 
 * **前端框架**：React 19 + TypeScript + Vite + Tailwind CSS (優雅、流暢排版與寬裕的負空間設計)
-* **後端伺服器**：Express (Port 3000)，利用 Vite Middleware 將前後端服務無縫整合至單一連接埠
-* **數據來源**：透過 `yahoo-finance2` API 即時擷取台股與美股的詳細行情、歷史 K 線與個股資料。內建「防限制（Rate Limit）雙重 Failover 機制」，如果 Yahoo API 暫時不可用，會自動降級抓取 Google Finance 或產生高度擬真的量化 Mock 數據，確保系統面不中斷
-* **AI 大模型**：採用 Google Gemini 2.5-flash 模型，利用其內置的 Google Search Grounding (聯網搜尋功能)，提供最新的市場財經新聞、自動情緒傾向判斷，以及專業的投資展望量化綜合評估
+* **後端伺服器**：Express (預設 Port 3000，可由 `PORT` 環境變數覆寫)，利用 Vite Middleware 將前後端服務無縫整合至單一連接埠
+* **數據來源**：透過 `yahoo-finance2` API 即時擷取台股與美股的詳細行情、歷史 K 線與個股資料。內建「資料來源失敗時的 fallback 機制」，如果 Yahoo API 暫時不可用，會自動降級抓取 Google Finance 或產生模擬資料（不代表即時行情）作為 fallback
+* **AI 大模型**：採用 Google Gemini 2.5-flash 模型，利用其內置的 Google Search Grounding (聯網搜尋功能)，提供最新的市場財經新聞、自動情緒傾向判斷，以及投資展望參考
 
 ---
 
 祝您投資順利，波段滿載！🚀
+
+
+
+
+
+
+
